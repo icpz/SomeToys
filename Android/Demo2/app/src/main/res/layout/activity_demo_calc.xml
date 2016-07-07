@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+        android:id="@+id/root"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center_horizontal|bottom"
+        android:orientation="vertical"
+        xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <TextView
+        android:id = "@+id/view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="50sp"
+        android:layout_marginLeft="2pt"
+        android:layout_marginRight="2pt"
+        android:padding="3pt"
+        android:layout_gravity="end"
+        android:textColor="#FFF"
+        android:text="0"
+        android:textAlignment="viewEnd"
+        />
+
+    <Button
+        android:id="@+id/btnClr"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Clear"/>
+
+    <AdapterViewFlipper
+        android:layout_gravity="center_horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/flipper"
+        android:flipInterval="5000"
+        android:autoStart="false"/>
+
+</LinearLayout>
+
