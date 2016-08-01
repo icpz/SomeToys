@@ -5,7 +5,28 @@
 # Don't forget to add your pipeline to the ITEM_PIPELINES setting
 # See: http://doc.scrapy.org/en/latest/topics/item-pipeline.html
 
+from scrapy.exceptions import DropItem  
+from os import system
+
+class DuplicatesPipeline(object):  
+  
+    def __init__(self):  
+        self.ids_seen = set()  
+
+    def process_item(self, item, spider):  
+        if item['url'] in self.ids_seen:  
+            raise DropItem("Duplicate item found: %s" % item['title'])  
+        else:  
+            self.ids_seen.add(item['url'])  
+            return item
 
 class BcyPipeline(object):
     def process_item(self, item, spider):
-        return item
+        path = 'output/%s/%s' % (item['author'], item['title'])
+        path = path.encode('utf-8')
+        system("mkdir -p '%s'" % path)
+
+        for picurl in item['pics']:
+            system("wget -c -P '%s' '%s'" % (path, picurl.encode('utf-8')))
+        
+        return item['title'] + 'complete'
