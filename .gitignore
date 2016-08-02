@@ -4,5 +4,5 @@
 *.swp
 *.out
 *.pyc
-output
+output/
 settings.py
