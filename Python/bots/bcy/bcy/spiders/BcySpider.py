@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
 import scrapy
-from bcy.settings import username, password
 import json
 from bcy.items import BcyItem
 import sys
@@ -26,14 +25,23 @@ class BcySpider(scrapy.Spider):
     begin = '0'
     ltime = '1470035248'
     ctime = '0'
+    username = ""
+    password = ""
 
     def start_requests(self):
+        with open('cfg/ltime.ini', 'r') as ifs:
+            self.ltime = ifs.readline()[:-1]
+        
+        with open('cfg/user.ini', 'r') as ifs:
+            self.username = ifs.readline()[:-1]
+            self.password = ifs.readline()[:-1]
+
         yield scrapy.FormRequest(
                 url = self.login_url,
                 headers = self.headers,
                 formdata = { 
-                         'email': username,
-                         'password': password,
+                         'email': self.username,
+                         'password': self.password,
                          'remember': '1'
                     },
                 meta = { 'cookiejar': 1 },
@@ -60,6 +68,8 @@ class BcySpider(scrapy.Spider):
         for pub in publics:
             if pub['otype'] != 'coser': continue
             if pub['ctime'] == self.ctime: continue
+            if self.ctime == '0':
+                open('ltime.ini', 'w').write(pub['ctime'] + '\n')
             self.ctime = pub['ctime']
             if int(self.ctime) <= int(self.ltime): raise StopIteration
 
@@ -69,7 +79,8 @@ class BcySpider(scrapy.Spider):
             item['title'] = detail['title']
             item['url'] = 'http://bcy.net/coser/detail/%s/%s' % (detail['cp_id'], detail['rp_id'])
             item['rp_id'] = detail['rp_id']
-            
+            item['cp_id'] = detail['cp_id']
+
             yield scrapy.Request(url = item['url'], headers = self.headers,
                                  meta = { 'item': item, 'cookiejar': self.cookiejar }, callback = self.parseItem)
 

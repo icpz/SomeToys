@@ -25,8 +25,12 @@ class BcyPipeline(object):
         path = 'output/%s/%s' % (item['author'], item['title'])
         path = path.encode('utf-8')
         system("mkdir -p '%s'" % path)
+        ofilename = '%s/../%s_%s.list' % (path, item['cp_id'], item['rp_id'])
+        ofs = open(ofilename.encode('utf-8'), 'w')
 
         for picurl in item['pics']:
             system("wget -c -P '%s' '%s'" % (path, picurl.encode('utf-8')))
+            ofs.write("%s\n" % picurl.encode('utf-8'))
         
+        ofs.close()
         return item['title'] + 'complete'

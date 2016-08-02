@@ -12,6 +12,7 @@ class BcyItem(scrapy.Item):
     # define the fields for your item here like:
     # name = scrapy.Field()
     url = scrapy.Field()
+    cp_id = scrapy.Field()
     rp_id = scrapy.Field()
     title = scrapy.Field()
     author = scrapy.Field()
