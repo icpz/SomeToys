@@ -72,7 +72,8 @@ class BcySpider(scrapy.Spider):
             if self.ctime == '0':
                 open('cfg/ltime.ini', 'w').write(str(pub['ctime']) + '\n')
             self.ctime = pub['ctime']
-            if int(self.ctime) <= int(self.ltime): raise StopIteration
+            if int(self.ctime) <= int(self.ltime):
+                break
 
             item = BcyItem()
             item['author'] = pub['uname'] if 'uname' in pub.keys() else pub['ouname']
