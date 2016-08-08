@@ -30,11 +30,12 @@ class BcySpider(scrapy.Spider):
 
     def start_requests(self):
         with open('cfg/ltime.ini', 'r') as ifs:
-            self.ltime = ifs.readline()[:-1]
+            self.ltime = ifs.readline().replace('\n', '')
+            open('cfg/ltime.bak', 'a').write(self.ltime + '\n')
         
         with open('cfg/user.ini', 'r') as ifs:
-            self.username = ifs.readline()[:-1]
-            self.password = ifs.readline()[:-1]
+            self.username = ifs.readline().replace('\n', '')
+            self.password = ifs.readline().replace('\n', '')
 
         yield scrapy.FormRequest(
                 url = self.login_url,
@@ -69,7 +70,7 @@ class BcySpider(scrapy.Spider):
             if pub['otype'] != 'coser': continue
             if pub['ctime'] == self.ctime: continue
             if self.ctime == '0':
-                open('ltime.ini', 'w').write(pub['ctime'] + '\n')
+                open('cfg/ltime.ini', 'w').write(str(pub['ctime']) + '\n')
             self.ctime = pub['ctime']
             if int(self.ctime) <= int(self.ltime): raise StopIteration
 
