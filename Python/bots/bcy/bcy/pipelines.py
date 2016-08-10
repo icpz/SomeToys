@@ -22,15 +22,20 @@ class DuplicatesPipeline(object):
 
 class BcyPipeline(object):
     def process_item(self, item, spider):
+        if item['title'] == '':
+            item['title'] = "%s_%s" % (item['cp_id'], item['rp_id'])
+        item['author'] = item['author'].encode('utf-8', 'ignore')
+        item['title'] = item['title'].encode('utf-8', 'ignore')
+
         path = 'output/%s/%s' % (item['author'], item['title'])
-        path = path.encode('utf-8')
+        # path = path.encode('utf-8', 'ignore')
         system("mkdir -p '%s'" % path)
-        ofilename = '%s/../%s_%s.list' % (path, item['cp_id'], item['rp_id'])
-        ofs = open(ofilename.encode('utf-8'), 'w')
+        ofilename = '%s/../%s_%s.list' % (path, item['cp_id'].encode('utf-8', 'ignore'), item['rp_id'])
+        ofs = open(ofilename, 'w')
 
         for picurl in item['pics']:
             system("wget -c -P '%s' '%s'" % (path, picurl.encode('utf-8')))
             ofs.write("%s\n" % picurl.encode('utf-8'))
         
         ofs.close()
-        return item['title'] + 'complete'
+        return item['title'] + ' complete'
