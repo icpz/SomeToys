@@ -8,6 +8,7 @@ def main():
     with open('./cfg/%s.log' % uid, 'r') as ifs:
         latestid = ifs.readline().strip('\n')
     userid, worknum, nick_name = get_userid_and_worknum(uid)
+    print 'updating', nick_name
     work_list = get_work_list(userid, worknum, latestid)
     prefix = make_sure_output_path(nick_name)
 
