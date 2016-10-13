@@ -1,5 +1,5 @@
-#include <iostream>
 #include <cmath>
+#include <cstdio>
 #include <vector>
 #include <numeric>
 #include <string>
@@ -19,8 +19,8 @@ int main() {
             static int i;
             return make_pair(i++, p);
         });
-    sort(nodes.begin(), nodes.end(), [](auto a,  auto b) { return a.second > b.second; });
-    transform(nodes.begin(), nodes.end(), freq.begin(), [](auto p) { return p.second; });
+    sort(nodes.begin(), nodes.end(), [](const auto &a,  const auto &b) { return a.second > b.second; });
+    transform(nodes.begin(), nodes.end(), freq.begin(), [](const auto &p) { return p.second; });
     partial_sum(freq.begin(), freq.end(), back_inserter(pa));
 
     puts("sig       p(x)     W            K");
