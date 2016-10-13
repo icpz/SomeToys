@@ -47,16 +47,15 @@ int main() {
     getHuffmanCode(result, nodes.top());
     sort(result.begin(), result.end(), [](const auto &a, const auto &b) {return a.first < b.first;});
 
+    float avg = 0.0;
     puts("sig       p(x)     W            K");
     puts("---------------------------------");
     for (const auto &line : result) {
         printf("%-6d    %-6g   %-11s  %-3lu\n", line.first, freq[line.first], line.second.c_str(), line.second.size());
+        avg += freq[line.first] * line.second.size();
     }
     puts("---------------------------------");
-    printf("avg(K) = %g sym/sig\n", accumulate(freq.begin(), freq.end(), 0.0, [&result](float a, float b) {
-                    static int i;
-                    return a + b * result[i++].second.size();
-                }));
+    printf("avg(K) = %g sym/sig\n", avg);
     delete nodes.top();
     return 0;
 }
