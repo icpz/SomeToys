@@ -3,7 +3,7 @@
 #include <vector>
 #include <string>
 #include <numeric>
-#include <iterator>
+#include <queue>
 using namespace std;
 
 template<class T>
@@ -27,40 +27,29 @@ void getHuffmanCode(vector<pair<int, string>> &result, NodeType *root, string co
 
 int main() {
     vector<float> freq{0.2, 0.19, 0.18, 0.17, 0.15, 0.1, 0.01};// {0.4, 0.18, 0.1, 0.1, 0.07, 0.06, 0.05, 0.04};
-    vector<NodeType *> nodes;
-    auto cmp = [](NodeType *a, NodeType *b) {
-        if (a->p == b->p) {
-            if (a->sym == -1) return false;
-            if (b->sym == -1) return true;
-            return a->sym < b->sym;
-        }
-        return a->p > b->p;
-    };
+    auto cmp = [](NodeType *a, NodeType *b) { return a->p > b->p; };
+    priority_queue<NodeType *, vector<NodeType *>, decltype(cmp)> nodes(cmp);
 
-    transform(freq.begin(), freq.end(), back_inserter(nodes), [](float p){
-                static int i = 1;
-                return new NodeType(i++, p);
+    for_each(freq.begin(), freq.end(), [&nodes](float p){
+                static int i;
+                nodes.push(new NodeType(i++, p));
             });
 
-    auto heapEnd = nodes.end();
-    make_heap(nodes.begin(), heapEnd, cmp);
-    while (heapEnd != next(nodes.begin())) {
-        pop_heap(nodes.begin(), heapEnd--, cmp);
-        NodeType *right = *heapEnd;
-        pop_heap(nodes.begin(), heapEnd--, cmp);
-        NodeType *left = *heapEnd;
+    for (size_t i = 1; i < freq.size(); ++i) {
+        NodeType *right = nodes.top();
+        nodes.pop();
+        NodeType *left = nodes.top();
+        nodes.pop();
         NodeType *root = new NodeType(-1, left->p + right->p, left, right);
-        nodes.erase(heapEnd, nodes.end());
-        nodes.push_back(root);
-        heapEnd = nodes.end();
-        push_heap(nodes.begin(), heapEnd, cmp);
+        nodes.push(root);
     }
     vector<pair<int, string>> result;
-    getHuffmanCode(result, nodes[0]);
+    getHuffmanCode(result, nodes.top());
     sort(result.begin(), result.end(), [](auto a, auto b) {return a.first < b.first;});
     for (const auto &line : result) {
         cout << line.first << " " << freq[line.first - 1] << " " << line.second << endl;
     }
+    delete nodes.top();
     return 0;
 }
 
