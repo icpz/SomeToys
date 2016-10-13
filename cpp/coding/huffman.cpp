@@ -1,9 +1,9 @@
-#include <iostream>
 #include <algorithm>
 #include <vector>
 #include <string>
 #include <numeric>
 #include <queue>
+#include <cstdio>
 using namespace std;
 
 template<class T>
@@ -46,9 +46,17 @@ int main() {
     vector<pair<int, string>> result;
     getHuffmanCode(result, nodes.top());
     sort(result.begin(), result.end(), [](auto a, auto b) {return a.first < b.first;});
+
+    puts("sig       p(x)     W            K");
+    puts("---------------------------------");
     for (const auto &line : result) {
-        cout << line.first << " " << freq[line.first - 1] << " " << line.second << endl;
+        printf("%-6d    %-6g   %-11s  %-3lu\n", line.first, freq[line.first], line.second.c_str(), line.second.size());
     }
+    puts("---------------------------------");
+    printf("avg(K) = %g sym/sig\n", accumulate(freq.begin(), freq.end(), 0.0, [&result](float a, float b) {
+                    static int i;
+                    return a + b * result[i++].second.size();
+                }));
     delete nodes.top();
     return 0;
 }

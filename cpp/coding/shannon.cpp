@@ -23,11 +23,19 @@ int main() {
     transform(nodes.begin(), nodes.end(), freq.begin(), [](auto p) { return p.second; });
     partial_sum(freq.begin(), freq.end(), back_inserter(pa));
 
+    puts("sig       p(x)     W            K");
+    puts("---------------------------------");
+    
+    float avg = 0.0;
     for (size_t i = 0; i < nodes.size(); ++i) {
-        cout << nodes[i].first << " ";
         int n = ceil(-log2(nodes[i].second));
-        cout << getbits(pa[i], n) << endl;
+        string word = getbits(pa[i], n);
+        printf("%-6d    %-6g   %-11s  %-3lu\n", nodes[i].first, freq[nodes[i].first], word.c_str(), word.size());
+        avg += word.size() * freq[nodes[i].first];
     }
+
+    puts("---------------------------------");
+    printf("avg(K) = %g sym/sig\n", avg);
 
     return 0;
 }
